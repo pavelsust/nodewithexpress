@@ -1,6 +1,7 @@
 const config = require('config')
 const express = require('express')
 const Joi = require('joi')
+const debug = require('debug')('app:startup')
 const logging = require('./logger')
 const helmet = require('helmet')
 const morgan = require('morgan')
@@ -21,8 +22,10 @@ console.log('Mail password '+config.get('mail.password'))
 
 if (app.get('env')=== 'development'){
     app.use(morgan('tiny'))
-    console.log('Morgan enable')
+    debug('Morgan enabled ...')
 }
+
+debug('Connected to the database')
 
 //app.use(logging.log())
 
@@ -108,7 +111,6 @@ const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log(`listening port ${port}`)
 })
-
 
 function validateCourse(course) {
     const schema = {
