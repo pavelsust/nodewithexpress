@@ -16,6 +16,9 @@ app.use(helmet())
 console.log('Application name'+config.get('name'))
 console.log('Application '+config.get('mail.host'))
 
+console.log('Application name'+config.get('name'))
+console.log('Mail password '+config.get('mail.password'))
+
 if (app.get('env')=== 'development'){
     app.use(morgan('tiny'))
     console.log('Morgan enable')
