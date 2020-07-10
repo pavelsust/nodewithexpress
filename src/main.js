@@ -2,6 +2,7 @@ const config = require('config')
 const express = require('express')
 const courses = require('./routes/courses')
 const home = require('./routes/home')
+const genres = require('./genres/genres')
 
 const debug = require('debug')('app:startup')
 const logging = require('./middleware/logger')
@@ -12,35 +13,17 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
 app.use(express.static('src/public'))
 app.use(helmet())
+
+
 app.use('/api/courses' , courses)
+app.use('/api/genres', genres)
 app.use('/', home)
 
-
-// Configuration
-console.log('Application name'+config.get('name'))
-console.log('Application '+config.get('mail.host'))
-
-console.log('Application name'+config.get('name'))
-console.log('Mail password '+config.get('mail.password'))
-
-if (app.get('env')=== 'development'){
-    app.use(morgan('tiny'))
-    debug('Morgan enabled ...')
-}
-
-debug('Connected to the database')
-
-//app.use(logging.log())
-
-//console.log(`${process.env.NODE_ENV}`) // get the enviourment
-//let env= app.get('env') // get the enviorment value
-//console.log(env)
 
 app.use( (request, response , next)=>{
     console.log('Authenticating....')
     next()
 })
-
 
 
 
