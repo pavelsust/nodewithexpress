@@ -4,7 +4,7 @@ const courses = require('./routes/courses')
 const home = require('./routes/home')
 
 const debug = require('debug')('app:startup')
-const logging = require('./logger')
+const logging = require('./middleware/logger')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const app = express()
@@ -41,9 +41,6 @@ app.use( (request, response , next)=>{
     next()
 })
 
-app.get('/', (request, response) => {
-    response.send('hello world!!!!!')
-})
 
 
 
