@@ -1,3 +1,4 @@
+const config = require('config')
 const express = require('express')
 const Joi = require('joi')
 const logging = require('./logger')
@@ -8,8 +9,23 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
 app.use(express.static('src/public'))
 app.use(helmet())
-app.use(morgan('tiny'))
+
+
+
+// Configuration
+console.log('Application name'+config.get('name'))
+console.log('Application '+config.get('mail.host'))
+
+if (app.get('env')=== 'development'){
+    app.use(morgan('tiny'))
+    console.log('Morgan enable')
+}
+
 //app.use(logging.log())
+
+//console.log(`${process.env.NODE_ENV}`) // get the enviourment
+//let env= app.get('env') // get the enviorment value
+//console.log(env)
 
 app.use( (request, response , next)=>{
     console.log('Authenticating....')
