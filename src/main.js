@@ -1,7 +1,20 @@
 const express = require('express')
 const Joi = require('joi')
+const logging = require('./logger')
+const helmet = require('helmet')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({extended:true}))  //key=value&key=value
+app.use(express.static('src/public'))
+app.use(helmet())
+app.use(morgan('tiny'))
+//app.use(logging.log())
+
+app.use( (request, response , next)=>{
+    console.log('Authenticating....')
+    next()
+})
 
 const courses = [{
     id: 1,
@@ -20,14 +33,10 @@ app.get('/api/post/:year/:month', (request, response) => {
     console.log(request.query)
 })
 
-
 app.post('/api/courses', (request, response) => {
 
     let {error} = validateCourse(request.body)
-    if (error) {
-        response.status(400).send(error.details[0].message)
-        return;
-    }
+    if (error) return response.status(400).send(error.details[0].message)
 
     let course = {id: courses.length + 1, "name": request.body.name}
     courses.push(course)
@@ -40,9 +49,6 @@ app.get('/api/courses/:id', (request, response) => {
     console.log('' + request.params.id)
     let courseResult = courses.find(args => args.id === parseInt(request.params.id))
 
-
-    // 404 object not found
-
     if (!courseResult) response.status(404).send('The course with given id not found')
     response.send(courseResult)
 })
@@ -51,35 +57,24 @@ app.get('/api/courses/:id', (request, response) => {
 app.put('/api/courses/:id', (request, response) => {
     // Look up the course
     let courseResult = courses.find(args => args.id === parseInt(request.params.id))
-    if (!courseResult) {
-        response.status(404).send('The given course is not found')
-        return
-    }
+    if (!courseResult) return response.status(404).send('The given course is not found')
 
     let {error} = validateCourse(request.body)
-    if (error) {
-        response.status(400).send(error.details[0].message)
-        return;
-    }
+    if (error) return response.status(400).send(error.details[0].message)
 
     courseResult.name = request.body.name
     response.send(courseResult)
 
-    // return updated course
 })
 
-app.delete('/api/courses/:id' , (request , response) =>{
+app.delete('/api/courses/:id', (request, response) => {
     //Look up the course
     // Not exisit , return 404
     let courseResult = courses.find(args => args.id === parseInt(request.params.id))
-    if (!courseResult) {
-        response.status(404).send('The given course is not found')
-        return
-    }
-
+    if (!courseResult) return response.status(404).send('The given course is not found')
     // delete part
     let index = courses.indexOf(courseResult)
-    courses.splice(index , 1)
+    courses.splice(index, 1)
 
     //response.send(courseResult)
 
