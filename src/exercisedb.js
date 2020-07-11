@@ -23,12 +23,17 @@ let courseSchema = new mongoose.Schema({
 
 let Courses = mongoose.model("courses" , courseSchema)
 
-getCourses()
+showResult()
+async function showResult(){
+    let result = await getCourses()
+    logger.info(result)
+}
+
 async function getCourses(){
-    await Courses.find({
-        author: /.*jack.*/i,
-        price: 12,
+    return await Courses.find({
+        //author: /.*jack.*/i,
+        //price: 12,
         isPublished:true
     })
-        .then(args => logger.info(args))
 }
+
