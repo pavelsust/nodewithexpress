@@ -19,7 +19,9 @@ let courseSchema = new mongoose.Schema({
     category:{
         type:Array,
         enum:['web' , 'mobile' , 'network'],
-        required:true
+        required:true,
+        //lowercase:true
+        trim: true
     },
     author: String,
     isPublished: Boolean,
@@ -27,6 +29,8 @@ let courseSchema = new mongoose.Schema({
         type: Number,
         min:10,
         max:200,
+        set: v=> Math.round(v),
+        get: v=> Math.round(v),
         required:  function (){
             logger.info(this.isPublished)
             return this.isPublished}
@@ -35,7 +39,7 @@ let courseSchema = new mongoose.Schema({
         type:Array,
         validate:{
             validator: function (v){
-                return v.length>0
+                return v && v.length>0
             },
             message: 'Course should have at least one tag'
         }
@@ -54,16 +58,18 @@ async function createCourse() {
     let course = new Courses({
         name: 'pavel',
         author: 'pavel',
-        price: 10,
+        price: 15.45,
         isPublished: true,
-        category:['web' , 'mobile'],
-        tags: []
+        category:['web'],
+        tags: ['frontend']
     })
     try {
         let result = await course.save()
         logger.info(result)
     } catch (e) {
-        logger.info(e)
+        for (field in e.errors){
+            logger.info(e.errors[field].message)
+        }
     }
 
 }
