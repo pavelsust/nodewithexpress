@@ -35,7 +35,7 @@ async function getCourses() {
         .find({id: '5a68fdd7bee8ea64649c2777'})
 }
 
-updateCourse('5a68fdd7bee8ea64649c2777')
+//updateCourse('5a68fdd7bee8ea64649c2777')
 
 async function updateCourse(id) {
     // Approach: Query first
@@ -67,4 +67,10 @@ async function updateCourse(id) {
 
 }
 
+remodeCourse('5a68fdd7bee8ea64649c2777')
+async function remodeCourse(id){
+    //let result = await Courses.deleteOne({_id: id})
+    let result = await Courses.findByIdAndRemove(id)
+    logger.info(result)
+}
 
