@@ -92,9 +92,11 @@ async function getCourses() {
 
     const pageNumber = 2
     const pageSize = 10
-    const courses = await Course.find()
+    const courses = await Course
+        .findById('5f09f8351760560846e2e3e5')
+        //.find()
         //.skip((pageNumber-1)*pageSize)
-        .limit(pageSize)
+        //.limit(pageSize)
         .then(args => logger.info(args))
 
 }
