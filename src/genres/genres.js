@@ -1,68 +1,90 @@
 const express = require('express')
 const router = express.Router()
 const Joi = require('joi')
-
-
-
-const genresList = [{
-    id: 1, "name": 'Action'},
-    {id: 2, "name": 'Horror'},
-    {id: 3, "name": 'Romance'}
-]
-
-
-router.get('/', (request, response) => {
-    response.send(genresList)
+const mongoose = require('mongoose')
+const logger = require('node-color-log');
+const genreSchema = new mongoose.Schema({
+    name: {
+        type:String,
+        required: true,
+        minlength:5,
+        maxlength:50
+    }
 })
 
-router.post('/', (request, response) => {
+const Genre = mongoose.model('genre' , genreSchema)
+
+router.get('/', async (request, response) => {
+    let genres = await Genre.find()
+        .sort('name')
+    response.send(genres)
+
+})
+
+router.post('/', async (request, response) => {
+
+    //let {error} = validateCourse(request.body)
+    //if (error) return response.status(400).send(error.details[0].message)
+
+    try {
+        let genre = new Genre({
+            name: request.body
+        })
+        logger.info('validation error'+genre)
+        let result = await genre.save()
+        response.send(result)
+    }catch (e) {
+        logger.info(e)
+        response.status(500).send(e.message)
+    }
+
+})
+
+router.put('/:id', async (request, response) => {
+
 
     let {error} = validateCourse(request.body)
     if (error) return response.status(400).send(error.details[0].message)
 
-    let course = {id: genresList.length + 1, "name": request.body.name}
-    genresList.push(course)
-    response.send(course)
+   try {
+       let genreQueryResult = await Genre.findByIdAndUpdate(request.params.id,{
+           name: request.params.name
+       },{
+           new: true
+       })
+       if (!genreQueryResult) return response.status(404).send('The genre with the given ID is not found')
+       response.send(genreQueryResult)
+   }catch (e){
+        logger.info(e)
+       //response.status(500).send(e)
+   }
+
 
 })
 
-router.get('/:id', (request, response) => {
+router.delete('/:id', async (request, response) => {
 
-    console.log('' + request.params.id)
-    let courseResult = genresList.find(args => args.id === parseInt(request.params.id))
-
-    if (!courseResult) response.status(404).send('The course with given id not found')
-    response.send(courseResult)
-})
-
-
-router.put('/:id', (request, response) => {
-    // Look up the course
-    let courseResult = genresList.find(args => args.id === parseInt(request.params.id))
-    if (!courseResult) return response.status(404).send('The given course is not found')
-
-    let {error} = validateCourse(request.body)
-    if (error) return response.status(400).send(error.details[0].message)
-
-    courseResult.name = request.body.name
-    response.send(courseResult)
+    try {
+        let genreDeleteResult = await Genre.findByIdAndRemove(request.params.id)
+        if (!genreDeleteResult) return response.status(404).send('The given course is not found')
+        response.send(genreDeleteResult)
+    }catch (e) {
+        console.log(e)
+        response.status(500).send(e)
+    }
 
 })
 
-router.delete('/:id', (request, response) => {
-    //Look up the course
-    // Not exisit , return 404
-    let courseResult = genresList.find(args => args.id === parseInt(request.params.id))
-    if (!courseResult) return response.status(404).send('The given course is not found')
-    // delete part
-    let index = genresList.indexOf(courseResult)
-    genresList.splice(index, 1)
 
-    //response.send(courseResult)
-
-    console.log(genresList)
-    response.status(200).send(courseResult)
-
+router.get('/:id' , async (request , response)=>{
+    try {
+        let genreFindResult = await Genre.findById(request.params.id)
+        if (!genreFindResult) return response.status(404).send('Id not found')
+        response.send(genreFindResult)
+    }catch (e) {
+        logger.info(e)
+        response.status(500)
+    }
 })
 
 function validateCourse(course) {
@@ -71,6 +93,4 @@ function validateCourse(course) {
     }
     return Joi.validate(course, schema)
 }
-
-
 module.exports = router

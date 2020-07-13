@@ -1,5 +1,1 @@
-function log(request, response , next){
-    console.log('Logging....')
-}
-
-module.exports.log = log
+const logger = require('node-color-log');

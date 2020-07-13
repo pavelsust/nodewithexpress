@@ -1,19 +1,20 @@
 const config = require('config')
+const mongoose = require('mongoose')
 const express = require('express')
 const courses = require('./routes/courses')
 const home = require('./routes/home')
 const genres = require('./genres/genres')
-
-const debug = require('debug')('app:startup')
-const logging = require('./middleware/logger')
 const helmet = require('helmet')
-const morgan = require('morgan')
+const logger = require('node-color-log');
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
 app.use(express.static('src/public'))
 app.use(helmet())
 
+mongoose.connect('mongodb://localhost/vidly')
+    .then(()=> logger.info('Connected to MongoDB...'))
+    .catch(error => logger.error('Database is not connected '+error))
 
 app.use('/api/courses' , courses)
 app.use('/api/genres', genres)
