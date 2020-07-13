@@ -3,10 +3,10 @@ const mongoose = require('mongoose')
 const express = require('express')
 const courses = require('./routes/courses')
 const home = require('./routes/home')
-const genres = require('./genres/genres')
+const genres = require('./routes/genres')
 const helmet = require('helmet')
 const logger = require('node-color-log');
-const customer = require('./customers/customer')
+const customer = require('./routes/customer')
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value

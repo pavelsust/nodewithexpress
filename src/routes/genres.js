@@ -3,16 +3,9 @@ const router = express.Router()
 const Joi = require('joi')
 const mongoose = require('mongoose')
 const logger = require('node-color-log');
-const genreSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        minlength: 5,
-        maxlength: 50
-    }
-})
+const {GenreSchema,validateCourse} = require('./../module/genres-model')
 
-const Genre = mongoose.model('genre', genreSchema)
+const Genre = mongoose.model('genre', GenreSchema)
 
 router.get('/', async (request, response) => {
     let genres = await Genre.find()
@@ -81,12 +74,5 @@ router.get('/:id', async (request, response) => {
         response.status(500)
     }
 })
-
-function validateCourse(course) {
-    const schema = {
-        name: Joi.string().min(3).required()
-    }
-    return Joi.validate(course, schema)
-}
 
 module.exports = router

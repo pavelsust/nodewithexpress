@@ -1,14 +1,9 @@
 const express = require('express')
 const customerRouter = express.Router()
 const mongoose = require('mongoose')
+const {CustomerSchema} = require('./../module/customer-model')
 
-let customerSchema = new mongoose.Schema({
-    name:{type:String, required: true, minlength:3},
-    isGold:{type:Boolean, required: true},
-    phone:({type:Number , required:true})
-})
-
-const Customer = mongoose.model('customer' ,customerSchema)
+const Customer = mongoose.model('customer',CustomerSchema)
 
 customerRouter.get('/' , async (request , response)=>{
     let customerList =await Customer.find()
