@@ -42,6 +42,9 @@ router.post('/', async (request, response) => {
 
 router.put('/:id', async (request, response) => {
 
+    let {error} = validateCourse(request.body)
+    if (error) return response.status(400).send(error.details[0].message)
+
 
     let genreQueryResult = await Genre.findByIdAndUpdate(request.params.id, {
         name: request.body.name
