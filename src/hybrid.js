@@ -12,7 +12,7 @@ const movieSchema = new  mongoose.Schema({
     title:String,
     genre: {
         type:GenreSchema,
-        ref:''
+        ref:'genre'
     }
 })
 
@@ -33,7 +33,7 @@ const Movie = mongoose.model('movie' , movieSchema)
 // });
 
 
-createMovie('Avatar ' , new Genre({name:'threller'}))
+//createMovie('Bindas ' , new Genre({_id :'5f0c0bf5a7e4780649040535' ,name:'threller'}))
 
 async function createMovie(title ,genre){
     let movie = new Movie({
@@ -42,5 +42,12 @@ async function createMovie(title ,genre){
     })
 
     let result = await movie.save()
+    logger.info(result)
+}
+showList()
+async function showList(){
+    let result = await Movie.findById('5f0c68667a17d82361a716eb')
+        //.select('title genre.name')
+        .populate('genre'  , 'genre._id')
     logger.info(result)
 }
