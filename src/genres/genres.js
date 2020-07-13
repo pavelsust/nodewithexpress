@@ -5,14 +5,14 @@ const mongoose = require('mongoose')
 const logger = require('node-color-log');
 const genreSchema = new mongoose.Schema({
     name: {
-        type:String,
+        type: String,
         required: true,
-        minlength:5,
-        maxlength:50
+        minlength: 5,
+        maxlength: 50
     }
 })
 
-const Genre = mongoose.model('genre' , genreSchema)
+const Genre = mongoose.model('genre', genreSchema)
 
 router.get('/', async (request, response) => {
     let genres = await Genre.find()
@@ -23,18 +23,18 @@ router.get('/', async (request, response) => {
 
 router.post('/', async (request, response) => {
 
-    //let {error} = validateCourse(request.body)
-    //if (error) return response.status(400).send(error.details[0].message)
+    let {error} = validateCourse(request.body)
+    if (error) return response.status(400).send(error.details[0].message)
 
     try {
         let genre = new Genre({
-            name: request.body
+            name: request.body.name
         })
-        logger.info('validation error'+genre)
+        logger.info('validation error' + genre)
         let result = await genre.save()
         response.send(result)
-    }catch (e) {
-        logger.info(e)
+    } catch (e) {
+        logger.info(e.errors.name)
         response.status(500).send(e.message)
     }
 
@@ -43,23 +43,15 @@ router.post('/', async (request, response) => {
 router.put('/:id', async (request, response) => {
 
 
-    let {error} = validateCourse(request.body)
-    if (error) return response.status(400).send(error.details[0].message)
+    let genreQueryResult = await Genre.findByIdAndUpdate(request.params.id, {
+        name: request.body.name
+    }, {new: true}).then((result)=>{
+        logger.info(result)
+        if (!result) return response.status(404).send('The genre not found')
+        response.send(result)
+    }).catch(error => response.status(500).send())
 
-   try {
-       let genreQueryResult = await Genre.findByIdAndUpdate(request.params.id,{
-           name: request.params.name
-       },{
-           new: true
-       })
-       if (!genreQueryResult) return response.status(404).send('The genre with the given ID is not found')
-       response.send(genreQueryResult)
-   }catch (e){
-        logger.info(e)
-       //response.status(500).send(e)
-   }
-
-
+    logger.info('result '+genreQueryResult)
 })
 
 router.delete('/:id', async (request, response) => {
@@ -68,7 +60,7 @@ router.delete('/:id', async (request, response) => {
         let genreDeleteResult = await Genre.findByIdAndRemove(request.params.id)
         if (!genreDeleteResult) return response.status(404).send('The given course is not found')
         response.send(genreDeleteResult)
-    }catch (e) {
+    } catch (e) {
         console.log(e)
         response.status(500).send(e)
     }
@@ -76,12 +68,12 @@ router.delete('/:id', async (request, response) => {
 })
 
 
-router.get('/:id' , async (request , response)=>{
+router.get('/:id', async (request, response) => {
     try {
         let genreFindResult = await Genre.findById(request.params.id)
         if (!genreFindResult) return response.status(404).send('Id not found')
         response.send(genreFindResult)
-    }catch (e) {
+    } catch (e) {
         logger.info(e)
         response.status(500)
     }
@@ -93,4 +85,5 @@ function validateCourse(course) {
     }
     return Joi.validate(course, schema)
 }
+
 module.exports = router
