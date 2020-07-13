@@ -1,26 +1,33 @@
-let array = [1 , 3, 5]
+
+const express = require('express')
+const router = express.Router()
 
 
 
-result()
- async function result(){
+// let array = [1 , 3, 5]
+//
 
-    try {
-        let result = await findArrayItem(1)
-        console.log('final '+result)
-    }catch (e) {
-        console.log(e)
-    }
-
-
-}
-
-
-function findArrayItem(id){
-    return new Promise((resolve , reject)=>{
-      setTimeout(()=>{
-          //let result = array.find(args => args===id)
-          reject(new Error('error'))
-      }, 2000)
-    })
-}
+//
+//
+// result()
+//  async function result(){
+//
+//     try {
+//         let result = await findArrayItem(1)
+//         console.log('final '+result)
+//     }catch (e) {
+//         console.log(e)
+//     }
+//
+//
+// }
+//
+//
+// function findArrayItem(id){
+//     return new Promise((resolve , reject)=>{
+//       setTimeout(()=>{
+//           //let result = array.find(args => args===id)
+//           reject(new Error('error'))
+//       }, 2000)
+//     })
+// }

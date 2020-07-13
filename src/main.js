@@ -6,6 +6,7 @@ const home = require('./routes/home')
 const genres = require('./genres/genres')
 const helmet = require('helmet')
 const logger = require('node-color-log');
+const customer = require('./customers/customer')
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
@@ -18,15 +19,13 @@ mongoose.connect('mongodb://localhost/vidly')
 
 app.use('/api/courses' , courses)
 app.use('/api/genres', genres)
+app.use('/api/customer', customer)
 app.use('/', home)
-
 
 app.use( (request, response , next)=>{
     console.log('Authenticating....')
     next()
 })
-
-
 
 //PORT
 const port = process.env.PORT || 3000
