@@ -3,9 +3,8 @@ const router = express.Router()
 const Joi = require('joi')
 const mongoose = require('mongoose')
 const logger = require('node-color-log');
-const {GenreSchema,validateCourse} = require('./../module/genres-model')
+const {Genre,validateCourse} = require('./../module/genres-model')
 
-const Genre = mongoose.model('genre', GenreSchema)
 
 router.get('/', async (request, response) => {
     let genres = await Genre.find()
@@ -37,7 +36,6 @@ router.put('/:id', async (request, response) => {
 
     let {error} = validateCourse(request.body)
     if (error) return response.status(400).send(error.details[0].message)
-
 
     let genreQueryResult = await Genre.findByIdAndUpdate(request.params.id, {
         name: request.body.name

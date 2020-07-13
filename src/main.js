@@ -7,6 +7,7 @@ const genres = require('./routes/genres')
 const helmet = require('helmet')
 const logger = require('node-color-log');
 const customer = require('./routes/customer')
+const movieRouter = require('./routes/movie')
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
@@ -20,6 +21,7 @@ mongoose.connect('mongodb://localhost/vidly')
 app.use('/api/courses' , courses)
 app.use('/api/genres', genres)
 app.use('/api/customer', customer)
+app.use('/api/movie' , movieRouter)
 app.use('/', home)
 
 app.use( (request, response , next)=>{
