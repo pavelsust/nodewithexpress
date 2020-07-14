@@ -5,5 +5,8 @@ let CustomerSchema = new mongoose.Schema({
     isGold:{type:Boolean, required: true},
     phone:({type:Number , required:true})
 })
+const Customer = mongoose.model('customer',CustomerSchema)
 
+
+module.exports.Customer = Customer
 module.exports.CustomerSchema = CustomerSchema

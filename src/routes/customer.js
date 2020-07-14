@@ -1,9 +1,6 @@
 const express = require('express')
 const customerRouter = express.Router()
-const mongoose = require('mongoose')
-const {CustomerSchema} = require('./../module/customer-model')
-
-const Customer = mongoose.model('customer',CustomerSchema)
+const {Customer} = require('./../module/customer-model')
 
 customerRouter.get('/' , async (request , response)=>{
     let customerList =await Customer.find()
@@ -26,5 +23,7 @@ customerRouter.post('/', async (request , response)=>{
             response.send(result)})
         .catch(error => response.status(500).send(error))
 })
+
+customerRouter.put('/')
 
 module.exports = customerRouter

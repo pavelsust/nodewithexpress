@@ -1,7 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const Joi = require('joi')
-const mongoose = require('mongoose')
 const logger = require('node-color-log');
 const {Genre,validateCourse} = require('./../module/genres-model')
 
