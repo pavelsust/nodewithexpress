@@ -1,9 +1,12 @@
 const express = require('express')
 const routerRental = express.Router()
+const mongoose = require('mongoose')
 const {Movie} = require('./../module/movie-module')
 const {Customer} = require('./../module/customer-model')
 const {Rental, validateRental} = require('./../module/rental-model')
 const logger = require('node-color-log');
+const Fawn = require('fawn')
+
 
 routerRental.get('/', async (request, response) => {
     let result = await Rental.find()
@@ -18,16 +21,15 @@ routerRental.get('/', async (request, response) => {
 
 routerRental.post('/', async (request, response) => {
 
-    logger.info(request.body.movieID)
-
-    let body = {
-        movieID: "movie",
-        customerID: "customer"
+    /*
+    {
+        "movieID": "5f0cbc342d38ac0d47fe2a32",
+        "customerID": "5f0c1e0b1688c60b95360562"
     }
+     */
 
-    let {error} = validateRental(body)
-    logger.info(error)
-    //if (error) return response.status(400).send(error.details[0].message)
+    let {error} = validateRental(request.body)
+    if (error) return response.status(400).send(error.details[0].message)
 
     let customer = await Customer.findById(request.body.customerID)
     if (!customer) return response.status(400).send('Invalid customer.')
@@ -51,12 +53,18 @@ routerRental.post('/', async (request, response) => {
         }
     })
 
-    let result = await rental.save()
-    movie.numberInStock--
-    let movieResult = movie.save()
-    logger.info(movieResult)
-    response.send(result)
-    logger.info(result)
+    try {
+        new Fawn.Task()
+            .save('rentals', rental)
+            .update('movies', {_id: movie._id}, {
+                $inc:{numberInStock: -1}
+            }).run()
+
+        response.send(rental)
+    } catch (error) {
+        response.status(500).send(error)
+    }
+
 })
 
 routerRental.get('/:id', async (request, response) => {

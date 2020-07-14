@@ -50,6 +50,8 @@ router.delete('/:id', (request, response) => {
     //Look up the course
     // Not exisit , return 404
     let courseResult = courses.find(args => args.id === parseInt(request.params.id))
+
+
     if (!courseResult) return response.status(404).send('The given course is not found')
     // delete part
     let index = courses.indexOf(courseResult)
