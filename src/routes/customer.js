@@ -64,7 +64,6 @@ customerRouter.delete('/:id', async (request, response) => {
 
      */
 
-
     let customer = await Customer.findById(request.params.id)
     if (!customer) return response.status(404).send('Customer id not fond')
     /**
