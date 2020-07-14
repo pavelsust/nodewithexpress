@@ -9,6 +9,7 @@ const logger = require('node-color-log');
 const customer = require('./routes/customer')
 const movieRouter = require('./routes/movie')
 const rentalRouter = require('./routes/rental')
+const userRouter = require('./routes/users')
 const Fawn = require('fawn')
 Fawn.init(mongoose)
 
@@ -27,6 +28,7 @@ app.use('/api/genres', genres)
 app.use('/api/customer', customer)
 app.use('/api/movie' , movieRouter)
 app.use('/api/rental', rentalRouter)
+app.use('/api/user' , userRouter)
 
 app.use( (request, response , next)=>{
     console.log('Authenticating....')
