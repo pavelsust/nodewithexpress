@@ -1,4 +1,5 @@
 const userRoute = require('express').Router()
+const bcrypt = require('bcrypt')
 const logger = require('node-color-log');
 const {User,validateUser} = require('./../module/user-module')
 const _ = require('lodash')
@@ -11,6 +12,9 @@ userRoute.post('/' , async (request , response)=>{
     if (checkUser) return response.status(400).send(responseError('User Already registered'))
 
     let userResult = new User(_.pick(request.body, ['name', 'email', 'password']))
+    const salt = await bcrypt.genSalt(10)
+    userResult.password = await bcrypt.hash(userResult.password, salt)
+
 
     let user =await userResult.save()
         .then(result => {if (!result) return  response.status(500)
