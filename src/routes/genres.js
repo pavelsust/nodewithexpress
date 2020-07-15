@@ -2,16 +2,21 @@ const express = require('express')
 const router = express.Router()
 const logger = require('node-color-log');
 const {Genre,validateCourse} = require('./../module/genres-model')
+const authMiddleWare = require('./../middleware/middleware-auth')
+const adminMiddleWare = require('../middleware/middleware-admin')
+const errorResponse = require('./../utils/errorresponse')
 
 
-router.get('/', async (request, response) => {
+router.get('/', async (request, response, next) => {
     let genres = await Genre.find()
         .sort('name')
-    response.send(genres)
+        .then(result =>{if (!result) return response.status(500)
+        response.send(result)})
+        .catch(error=> next(error))
 
 })
 
-router.post('/', async (request, response) => {
+router.post('/', authMiddleWare, async (request, response) => {
 
     let {error} = validateCourse(request.body)
     if (error) return response.status(400).send(error.details[0].message)
@@ -27,6 +32,7 @@ router.post('/', async (request, response) => {
         logger.info(e.errors.name)
         response.status(500).send(e.message)
     }
+
 
 })
 
@@ -46,29 +52,23 @@ router.put('/:id', async (request, response) => {
     logger.info('result '+genreQueryResult)
 })
 
-router.delete('/:id', async (request, response) => {
+router.delete('/:id', [authMiddleWare, adminMiddleWare], async (request, response, next) => {
 
-    try {
-        let genreDeleteResult = await Genre.findByIdAndRemove(request.params.id)
-        if (!genreDeleteResult) return response.status(404).send('The given course is not found')
-        response.send(genreDeleteResult)
-    } catch (e) {
-        console.log(e)
-        response.status(500).send(e)
-    }
+    let genreDeleteResult = await Genre.findByIdAndRemove(request.params.id)
+        .then(result =>{if (!result) return errorResponse(response, 404, 'Id not found')
+        response.send(result)})
+    .catch(error => next(error))
 
 })
 
 
-router.get('/:id', async (request, response) => {
-    try {
-        let genreFindResult = await Genre.findById(request.params.id)
-        if (!genreFindResult) return response.status(404).send('Id not found')
-        response.send(genreFindResult)
-    } catch (e) {
-        logger.info(e)
-        response.status(500)
-    }
+router.get('/:id', async (request, response, next) => {
+
+    let genreFindResult = await Genre.findById(request.params.id)
+        .then(result =>{if (!result) return next('Id not found')
+        response.send(result)})
+        .catch(error => next(error))
+
 })
 
 module.exports = router

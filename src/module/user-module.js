@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const config = require('config')
+const jwt = require('jsonwebtoken')
+const logger = require('node-color-log');
 
-const User = mongoose.model('user' , mongoose.Schema({
+let userSchema = mongoose.Schema({
     name: {
         type:String,
         required: true,
@@ -22,9 +25,16 @@ const User = mongoose.model('user' , mongoose.Schema({
         required: true,
         minlength:3,
         maxlength:1024
-    }
+    },
+    isAdmin: Boolean
+})
 
-}))
+userSchema.methods.generateAuthToken = function (){
+    logger.info(this._id)
+    return jwt.sign({_id: this._id, isAdmin: this.isAdmin}, config.get('jwtPrivateKey'))
+}
+
+const User = mongoose.model('user' , userSchema)
 
 function validateUser(user){
     let schema={

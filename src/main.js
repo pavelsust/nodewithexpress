@@ -12,6 +12,7 @@ const movieRouter = require('./routes/movie')
 const rentalRouter = require('./routes/rental')
 const userRouter = require('./routes/users')
 const authRoute = require('./routes/auth')
+const errorMiddleware = require('./../src/middleware/error')
 const Fawn = require('fawn')
 Fawn.init(mongoose)
 
@@ -39,10 +40,8 @@ app.use('/api/rental', rentalRouter)
 app.use('/api/user' , userRouter)
 app.use('/api/auth' , authRoute)
 
-app.use( (request, response , next)=>{
-    console.log('Authenticating....')
-    next()
-})
+
+app.use(errorMiddleware)
 
 //PORT
 const port = process.env.PORT || 3000
