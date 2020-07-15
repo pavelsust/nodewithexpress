@@ -10,6 +10,7 @@ const customer = require('./routes/customer')
 const movieRouter = require('./routes/movie')
 const rentalRouter = require('./routes/rental')
 const userRouter = require('./routes/users')
+const authRoute = require('./routes/auth')
 const Fawn = require('fawn')
 Fawn.init(mongoose)
 
@@ -29,6 +30,7 @@ app.use('/api/customer', customer)
 app.use('/api/movie' , movieRouter)
 app.use('/api/rental', rentalRouter)
 app.use('/api/user' , userRouter)
+app.use('/api/auth' , authRoute)
 
 app.use( (request, response , next)=>{
     console.log('Authenticating....')
