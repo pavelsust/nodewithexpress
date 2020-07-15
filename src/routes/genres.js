@@ -64,7 +64,7 @@ router.delete('/:id', [authMiddleWare, adminMiddleWare], async (request, respons
 
 router.get('/:id', async (request, response, next) => {
 
-    let genreFindResult = await Genre.findById(request.params.id)
+    let genreFindResult = Genre.findById(request.params.id)
         .then(result =>{if (!result) return next('Id not found')
         response.send(result)})
         .catch(error => errorResponse(response, 500, error))
