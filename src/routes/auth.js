@@ -1,5 +1,6 @@
 const authRoute = require('express').Router()
 const jwt = require('jsonwebtoken')
+const config = require('config')
 const Joi = require('joi')
 const bcrypt = require('bcrypt')
 const logger = require('node-color-log');
@@ -17,7 +18,7 @@ authRoute.post('/' , async (request , response)=>{
     let validPassword = await bcrypt.compare(request.body.password, checkUser.password)
     if (!validPassword) return response.status(400).send(responseError('Invalid email or password'))
 
-    let token = jwt.sign({_id:checkUser._id}, 'jwtprivatekey')
+    let token = jwt.sign({_id:checkUser._id}, config.get('jwtPrivateKey'))
     response.send(responseToken(token))
 
 })
