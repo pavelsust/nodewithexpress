@@ -7,12 +7,14 @@ const adminMiddleWare = require('../middleware/middleware-admin')
 const errorResponse = require('./../utils/errorresponse')
 
 
-router.get('/', async (request, response, next) => {
+router.get('/', async (request, response, ) => {
+
     let genres = await Genre.find()
         .sort('name')
         .then(result =>{if (!result) return response.status(500)
         response.send(result)})
-        .catch(error=> next(error))
+        .catch(error=> errorResponse(response , 500 , ''+error))
+
 
 })
 
@@ -32,7 +34,6 @@ router.post('/', authMiddleWare, async (request, response) => {
         logger.info(e.errors.name)
         response.status(500).send(e.message)
     }
-
 
 })
 
@@ -57,17 +58,16 @@ router.delete('/:id', [authMiddleWare, adminMiddleWare], async (request, respons
     let genreDeleteResult = await Genre.findByIdAndRemove(request.params.id)
         .then(result =>{if (!result) return errorResponse(response, 404, 'Id not found')
         response.send(result)})
-    .catch(error => next(error))
+    .catch(error =>{errorResponse(response, 500, error)})
 
 })
-
 
 router.get('/:id', async (request, response, next) => {
 
     let genreFindResult = await Genre.findById(request.params.id)
         .then(result =>{if (!result) return next('Id not found')
         response.send(result)})
-        .catch(error => next(error))
+        .catch(error => errorResponse(response, 500, error))
 
 })
 
