@@ -1,10 +1,8 @@
 const express = require('express')
 const routerRental = express.Router()
-const mongoose = require('mongoose')
 const {Movie} = require('../model/movie-module')
 const {Customer} = require('../model/customer-model')
 const {Rental, validateRental} = require('../model/rental-model')
-const logger = require('node-color-log');
 const Fawn = require('fawn')
 
 
