@@ -1,8 +1,8 @@
 const express = require('express')
 const movieRouter = express.Router()
 const logger = require('node-color-log');
-const {Movie, validateMovie} = require('./../module/movie-module')
-const {Genre} = require('./../module/genres-model')
+const {Movie, validateMovie} = require('../model/movie-module')
+const {Genre} = require('../model/genres-model')
 
 movieRouter.get('/', async (request, response) => {
     let result = await Movie.find()

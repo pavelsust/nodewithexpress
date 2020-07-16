@@ -3,7 +3,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const logger = require('node-color-log');
-const {User, validateUser} = require('./../module/user-module')
+const {User, validateUser} = require('../model/user-module')
 const _ = require('lodash')
 const authMiddleware = require('./../middleware/middleware-auth')
 

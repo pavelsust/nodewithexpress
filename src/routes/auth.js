@@ -3,7 +3,7 @@ const authRoute = require('express').Router()
 const Joi = require('joi')
 const bcrypt = require('bcrypt')
 const logger = require('node-color-log');
-const {User,validateUser} = require('./../module/user-module')
+const {User,validateUser} = require('../model/user-module')
 const _ = require('lodash')
 
 

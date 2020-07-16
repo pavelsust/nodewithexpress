@@ -9,7 +9,7 @@ const logger = require('node-color-log');
 
 function route(app){
     app.use(function (request , response , next){
-        logger.info('Authorising...')
+        logger.info('Authorizing...')
         next()
     })
     app.use('/api/courses' , courses)

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const logger = require('node-color-log');
 
-const {Genre, GenreSchema} = require('./module/genres-model')
+const {Genre, GenreSchema} = require('./model/genres-model')
 
 mongoose.connect('mongodb://localhost/vidly')
     .then(() => console.log('Connected to MongoDB...'))

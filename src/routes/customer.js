@@ -1,6 +1,6 @@
 const customerRouter = require('express').Router()
-const {Customer, validateCustomerUpdate} = require('./../module/customer-model')
-const {Rental} = require('./../module/rental-model')
+const {Customer, validateCustomerUpdate} = require('../model/customer-model')
+const {Rental} = require('../model/rental-model')
 const logger = require('node-color-log');
 const Fawn = require('fawn')
 
