@@ -4,15 +4,28 @@ const express = require('express')
 const mongoose = require('mongoose')
 const Fawn = require('fawn')
 Fawn.init(mongoose)
+const winston = require('winston')
 const mainRoute = require('./../src/startup/route')
+
+
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))  //key=value&key=value
 app.use(express.static('src/public'))
 mainRoute.route(app)
+
+
+
 require('./../src/startup/db')()
 require('./../src/startup/logging')()
 require('./../src/startup/config')()
+
+//test
+
+const config = require('config')
+const logger = require('node-color-log')
+
+logger.info(config.get('name'))
 
 process.on('uncaughtException', (ex)=>{
     winston.error(ex.message, ex)

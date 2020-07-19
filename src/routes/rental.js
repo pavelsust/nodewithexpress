@@ -4,9 +4,12 @@ const {Movie} = require('../model/movie-module')
 const {Customer} = require('../model/customer-model')
 const {Rental, validateRental} = require('../model/rental-model')
 const Fawn = require('fawn')
+const logger = require('node-color-log')
 
 
 routerRental.get('/', async (request, response) => {
+
+
     let result = await Rental.find()
         .sort({dateOut: -1})
         .then(result => {
@@ -55,7 +58,7 @@ routerRental.post('/', async (request, response) => {
         new Fawn.Task()
             .save('rentals', rental)
             .update('movies', {_id: movie._id}, {
-                $inc:{numberInStock: -1}
+                $inc: {numberInStock: -1}
             }).run()
 
         response.send(rental)
@@ -65,13 +68,31 @@ routerRental.post('/', async (request, response) => {
 
 })
 
-routerRental.get('/:id', async (request, response) => {
+routerRental.get('/details/:id', async (request, response) => {
+
     let result = await Rental.findById(request.params.id)
         .then(result => {
             if (!result) return response.status(404).send('The rental with the given ID was not ')
             response.send(result)
         })
         .catch(error => response.status(404).send(error))
+})
+
+
+routerRental.get('/pavel', async (request, response) => {
+
+    let result = await Rental.find({
+        dateOut: {
+            $lt:''+new Date('2020-07-22').toISOString(),
+            $gt:''+new Date('2020-07-21').toISOString()
+        }
+    })
+        .sort({dateOut: -1})
+        .then(result => {
+            if (!result) return response.status(404)
+            response.send(result)
+        })
+        .catch(error => response.status(500).send(error))
 })
 
 module.exports = routerRental

@@ -35,6 +35,9 @@ userRoute.post('/', async (request, response) => {
     if (checkUser) return response.status(400).send(responseError('User Already registered'))
 
     let userResult = new User(_.pick(request.body, ['name', 'email', 'password']))
+
+
+
     const salt = await bcrypt.genSalt(10)
     userResult.password = await bcrypt.hash(userResult.password, salt)
 

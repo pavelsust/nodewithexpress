@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const dateFormat = require('dateformat');
 
 let Rental = mongoose.model('Rental', mongoose.Schema({
     customer:{
@@ -23,7 +24,7 @@ let Rental = mongoose.model('Rental', mongoose.Schema({
             }
         }),
         ref: 'customer',
-        required:true
+        required:true,
     },
 
     movie: {
@@ -48,7 +49,7 @@ let Rental = mongoose.model('Rental', mongoose.Schema({
     dateOut:{
         type:Date,
         required:true,
-        default: Date.now
+        default: Date.now()
     },
     dateRental:{
         type:Date,
@@ -69,3 +70,12 @@ function validateRental(rental){
 
 module.exports.Rental = Rental
 module.exports.validateRental = validateRental
+
+function nowDate(){
+    return
+}
+
+function customDate(){
+    return new Date("2017-05-26");
+}
+

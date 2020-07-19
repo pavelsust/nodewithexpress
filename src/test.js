@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
-
+const dateFormat = require('dateformat');
+const logger = require('node-color-log')
 
 let array = [1, 3, 5]
 
@@ -25,4 +26,9 @@ function findArrayItem(id) {
             resolve(result)
         }, 2000)
     })
+}
+
+nowDate()
+function nowDate(){
+    logger.info(dateFormat(Date.now(), "dd/mm/yyyy"))
 }

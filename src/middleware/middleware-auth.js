@@ -9,6 +9,7 @@ function auth (request , response , next){
         let decoded = jwt.verify(token, config.get('jwtPrivateKey'))
         request.user = decoded
         next()
+
     }catch (error){
         logger.info(error)
         response.status(400).send('Invalid token')
